@@ -34,4 +34,10 @@ jobs:
                     -H "X-GitHub-Api-Version: 2022-11-28" \
                     /repos/dothq/gecko-dev-scripts/actions/variables \
                     -f name='PREV_CHECK_VERSION' \
+                    -f value="$CURRENT_VERSION" || true
+                gh api --method POST \
+                    -H "Accept: application/vnd.github+json" \
+                    -H "X-GitHub-Api-Version: 2022-11-28" \
+                    /repos/dothq/gecko-dev-scripts/actions/variables/PREV_CHECK_VERSION \
+                    -f name='PREV_CHECK_VERSION' \
                     -f value="$CURRENT_VERSION"
