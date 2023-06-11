@@ -26,7 +26,7 @@ jobs:
 
             - name: Store current version
               env:
-                  GH_TOKEN: ${{ env.ROBOT_TOKEN }}
+                  GH_TOKEN: ${{ secrets.ROBOT_TOKEN }}
               run: |
                 CURRENT_VERSION=$(cat current_version.txt)
                 gh api --method POST \
