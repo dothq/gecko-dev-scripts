@@ -2,27 +2,21 @@ name: "Pull from upstream"
 
 on:
     schedule:
-        - cron: "0 12 * * SAT" # at 12pm noon every saturday
+        - cron: "0 12 * * *" # at 12pm noon every day
     workflow_dispatch:
 
 jobs:
     pull:
         runs-on: ubuntu-latest
         steps:
-            - name: Get current release version
-              run: |
-                curl https://raw.githubusercontent.com/mozilla/gecko-dev/release/browser/config/version.txt > current_version.txt
-            
+            - uses: actions/checkout@v3
+
+            - name: Install dependencies
+              run: npm install
+
             - name: Compare versions
               run: |
-                CURRENT_VERSION=$(cat current_version.txt)
-                npm init -y
-                npm i compare-versions
-                node -e "\
-                    var e = require('compare-versions').compareVersions('$CURRENT_VERSION', '${{ vars.PREV_CHECK_VERSION }}' == '' ? '$CURRENT_VERSION' : '${{ vars.PREV_CHECK_VERSION }}') == 1 ? 0 : 1;\
-                    console.log(e ? 'No changes to pull!' : 'Pulling changes...');\
-                    process.exit(e);\
-                "
+                ROBOT_TOKEN=${{ secrets.ROBOT_TOKEN }} node compare-versions.js ${{ vars.PREV_CHECK_VERSION }}
 
             - name: Store current version
               env:

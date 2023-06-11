@@ -1,0 +1,16 @@
+{
+  "name": "gecko-dev-scripts",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "repository": "https://github.com/dothq/gecko-dev-scripts",
+  "author": "EnderDev <kieran@dothq.org>",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/core": "^4.2.1",
+    "@octokit/plugin-rest-endpoint-methods": "^7.2.1",
+    "axios": "^1.4.0",
+    "compare-versions": "^6.0.0-rc.1",
+    "handlebars": "^4.7.7"
+  }
+}
