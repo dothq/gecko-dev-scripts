@@ -16,7 +16,8 @@ jobs:
             - name: Compare versions
               run: |
                 CURRENT_VERSION=$(cat current_version.txt)
-                npm i compare-versions -g
+                npm init -y
+                npm i compare-versions
                 node -e "process.exit(require('compare-versions').compareVersions('$CURRENT_VERSION', '${{ env.PREV_CHECK_VERSION }}') == 1 ? 0 : 1)"
 
             - name: Store current version
