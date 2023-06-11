@@ -19,7 +19,7 @@ jobs:
                 npm init -y
                 npm i compare-versions
                 node -e "\
-                    var e = require('compare-versions').compareVersions('$CURRENT_VERSION', '${{ env.PREV_CHECK_VERSION }}' == '' ? '$CURRENT_VERSION' : '${{ env.PREV_CHECK_VERSION }}') == 1 ? 0 : 1;\
+                    var e = require('compare-versions').compareVersions('$CURRENT_VERSION', '${{ vars.PREV_CHECK_VERSION }}' == '' ? '$CURRENT_VERSION' : '${{ vars.PREV_CHECK_VERSION }}') == 1 ? 0 : 1;\
                     console.log(e ? 'No changes to pull!' : 'Pulling changes...');\
                     process.exit(e);\
                 "
