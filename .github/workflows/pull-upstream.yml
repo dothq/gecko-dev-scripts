@@ -25,6 +25,8 @@ jobs:
                 "
 
             - name: Store current version
+              env:
+                  GH_TOKEN: ${{ github.token }}
               run: |
                 CURRENT_VERSION=$(cat current_version.txt)
                 gh api --method POST \
