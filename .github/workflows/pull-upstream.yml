@@ -2,7 +2,7 @@ name: "Pull from upstream"
 
 on:
     schedule:
-        - cron: "0 12 * * *" # at 12pm noon every day
+        - cron: "0 */12 * * *" # every 12 hours
     workflow_dispatch:
 
 jobs:
