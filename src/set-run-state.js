@@ -1,9 +1,8 @@
+import ms from "ms";
 import { createGHApp } from "./shared/github.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
 const main = async () => {
-    const args = process.argv.splice(2);
-
     const app = createGHApp();
 
     const installation = await app.octokit.request("GET /repos/{owner}/{repo}/installation", {
@@ -18,17 +17,29 @@ const main = async () => {
             owner: "dothq",
             repo: "gecko-dev",
             check_run_id: readFileSync("/run_id", "utf-8").trim(),
-            conclusion: args[0],
+            conclusion: process.env.CONCLUSION,
             status: "completed",
+            output: {
+                title: process.env.RUN_NAME,
+                summary: process.env.CONCLUSION == "success" 
+                    ? `Firefox v${process.env.VERSION} was successfully compiled in ${ms(Date.now() - process.env.START_TIME_MS)}` 
+                    : process.env.CONCLUSION == "failure" 
+                        ? `Failed to compile`
+                        : "Unknown outcome!"
+            }
         });
     } else {
         const run = await octokit.request("POST /repos/{owner}/{repo}/check-runs", {
             owner: "dothq",
             repo: "gecko-dev",
-            name: "build-ff",
-            head_sha: args[0],
-            details_url: args[1],
-            status: "in_progress"
+            name: process.env.RUN_NAME,
+            head_sha: process.env.HEAD_SHA,
+            details_url: process.env.DETAILS_URL,
+            status: "in_progress",
+            output: {
+                title: process.env.RUN_NAME,
+                summary: `Compiling Firefox v${process.env.VERSION}...`
+            }
         });
 
         writeFileSync("/run_id", run.data.id.toString(), "utf-8");
