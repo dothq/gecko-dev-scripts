@@ -4,6 +4,11 @@ on:
     schedule:
         - cron: "0 */12 * * *" # every 12 hours
     workflow_dispatch:
+        inputs:
+            skip_version_check:
+                description: "Skip checking upstream version"
+                required: true
+                type: boolean
 
 jobs:
     pull:
@@ -16,9 +21,10 @@ jobs:
 
             - name: Compare versions
               run: |
-                ROBOT_TOKEN=${{ secrets.ROBOT_TOKEN }} node src/compare-versions.js ${{ vars.PREV_CHECK_VERSION }}
+                ROBOT_TOKEN=${{ secrets.ROBOT_TOKEN }} node src/compare-versions.js ${{ inputs.skip_version_check == false && vars.PREV_CHECK_VERSION || '1.0.0' }}
 
             - name: Store current version
+              if: ${{ inputs.skip_version_check == false }}
               env:
                   GH_TOKEN: ${{ secrets.ROBOT_TOKEN }}
               run: |
