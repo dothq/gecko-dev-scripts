@@ -24,7 +24,10 @@ jobs:
                 cd ~/gd-scripts && npm install 
 
             - name: Update run state
-              run: ROBOT_TOKEN=${{ secrets.ROBOT_TOKEN }} node ~/gd-scripts/src/set-run-state.js ${{ inputs.sha }} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+              env:
+                GH_APP_ID: ${{ secrets.GH_APP_ID }}
+                GH_APP_KEY: ${{ secrets.GH_APP_KEY }}
+              run: node ~/gd-scripts/src/set-run-state.js ${{ inputs.sha }} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
             - name: Checkout source tree
               uses: actions/checkout@v3
@@ -56,4 +59,7 @@ jobs:
 
             - name: Update run state
               timeout-minutes: 5
-              run: ROBOT_TOKEN=${{ secrets.ROBOT_TOKEN }} node ~/gd-scripts/src/set-run-state.js ${{ steps.build.outcome }}
+              env:
+                GH_APP_ID: ${{ secrets.GH_APP_ID }}
+                GH_APP_KEY: ${{ secrets.GH_APP_KEY }}
+              run: node ~/gd-scripts/src/set-run-state.js ${{ steps.build.outcome }}
