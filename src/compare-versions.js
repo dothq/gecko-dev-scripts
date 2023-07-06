@@ -69,10 +69,21 @@ async function main() {
         repo: "gecko-dev-scripts"
     });
 
+    const workflows = await gh.request("GET /repos/{owner}/{repo}/actions/workflows", {
+        owner: "dothq",
+        repo: "gecko-dev-scripts",
+    });
+
+    const buildWorkflowId = workflows.data.workflows.find(w => w.path == "build-ff.yml").id;
+
+    if (!buildWorkflowId) {
+        throw new Error("No build-ff workflow!");
+    }
+
     await gh.request("POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", {
         owner: "dothq",
         repo: "gecko-dev-scripts",
-        workflow_id: "build-ff",
+        workflow_id: buildWorkflowId,
         ref: scriptsRepo.data.default_branch,
         inputs: {
             revision: pr.data.head.sha
