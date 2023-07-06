@@ -28,7 +28,7 @@ jobs:
                 git clone --depth 1 ${{ github.server_url }}/${{ github.repository }} ~/gd-scripts
                 cd ~/gd-scripts && npm install 
 
-            - name: Get current job URL
+            - name: Get current job ID
               uses: Tiryoh/gha-jobid-action@41f11aceecb8afcc9a3d9383242b9bad5a7a7cc3
               id: jobs
               with:
@@ -41,7 +41,7 @@ jobs:
                 GH_APP_KEY: ${{ secrets.GH_APP_KEY }}
                 RUN_NAME: "${{ github.job }} (${{ matrix.os }})"
                 HEAD_SHA: ${{ inputs.sha }}
-                DETAILS_URL: ${{ steps.jobs.outputs.html_url }}
+                DETAILS_URL: https://workflow-redir.dev.dothq.org/api/go?run_id=${{ github.run_id }}&job_id=${{ steps.jobs.outputs.job_id }}
                 VERSION: ${{ env.FF_VERSION }}
               run: node ~/gd-scripts/src/set-run-state.js
 

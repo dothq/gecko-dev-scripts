@@ -22,12 +22,12 @@ const main = async () => {
             conclusion: process.env.CONCLUSION,
             status: "completed",
             output: {
-                title: process.env.RUN_NAME,
-                summary: process.env.CONCLUSION == "success" 
+                title: process.env.CONCLUSION == "success" 
                     ? `Firefox v${process.env.VERSION} was successfully compiled in ${ms(Date.now() - process.env.START_TIME_MS)}` 
                     : process.env.CONCLUSION == "failure" 
                         ? `Failed to compile`
-                        : "Unknown outcome!"
+                        : "Unknown outcome!",
+                summary: ""
             }
         });
     } else {
@@ -39,8 +39,8 @@ const main = async () => {
             details_url: process.env.DETAILS_URL,
             status: "in_progress",
             output: {
-                title: process.env.RUN_NAME,
-                summary: `Compiling Firefox v${process.env.VERSION}...`
+                title: `Compiling Firefox v${process.env.VERSION}...`,
+                summary: ""
             }
         });
 
