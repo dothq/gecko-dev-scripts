@@ -4,7 +4,14 @@ import { existsSync, readFileSync, writeFileSync } from "fs";
 const main = async () => {
     const args = process.argv.splice(2);
 
-    const { octokit } = createGHApp();
+    const app = createGHApp();
+
+    const installation = await app.octokit.request("GET /repos/{owner}/{repo}/installation", {
+        owner: "dothq",
+        repo: "gecko-dev"
+    });
+
+    const octokit = await app.getInstallationOctokit(installation.data.id);
 
     if (existsSync("/run_id")) {
         await octokit.request("PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
