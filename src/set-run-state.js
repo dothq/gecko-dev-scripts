@@ -1,13 +1,13 @@
-import { createGH } from "./shared/github.js";
+import { createGHApp } from "./shared/github.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
 const main = async () => {
     const args = process.argv.splice(2);
 
-    const gh = createGH();
+    const { octokit } = createGHApp();
 
     if (existsSync("/run_id")) {
-        await gh.request("PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
+        await octokit.request("PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
             owner: "dothq",
             repo: "gecko-dev",
             check_run_id: readFileSync("/run_id", "utf-8").trim(),
@@ -15,7 +15,7 @@ const main = async () => {
             status: "completed",
         });
     } else {
-        const run = await gh.request("POST /repos/{owner}/{repo}/check-runs", {
+        const run = await octokit.request("POST /repos/{owner}/{repo}/check-runs", {
             owner: "dothq",
             repo: "gecko-dev",
             name: "build-ff",

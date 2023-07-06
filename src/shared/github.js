@@ -1,3 +1,4 @@
+import { App } from "octokit";
 import { Octokit } from "@octokit/core";
 import { restEndpointMethods } from "@octokit/plugin-rest-endpoint-methods";
 
@@ -7,3 +8,12 @@ export const createGH = () => {
 
     return gh;
 };
+
+export const createGHApp = () => {
+    const app = new App({
+        appId: process.env.GH_APP_ID,
+        privateKey: process.env.GH_APP_KEY,
+    });
+
+    return app;
+}   
