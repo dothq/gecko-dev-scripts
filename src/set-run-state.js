@@ -31,7 +31,7 @@ const main = async () => {
             status: "in_progress"
         });
 
-        writeFileSync("/run_id", run.data.id, "utf-8");
+        writeFileSync("/run_id", run.data.id.toString(), "utf-8");
     }
 }
 
