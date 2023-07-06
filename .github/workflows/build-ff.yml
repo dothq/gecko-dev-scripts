@@ -33,7 +33,7 @@ jobs:
               id: jobs
               with:
                 github_token: ${{ secrets.ROBOT_TOKEN }}
-                job_name: ${{ github.job }}
+                job_name: "${{ github.job }} (${{ matrix.os }})"
 
             - name: Update run state
               env:
