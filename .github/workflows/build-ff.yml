@@ -18,9 +18,9 @@ jobs:
                 os: [ubuntu-latest]
         runs-on: ${{ matrix.os }}
         steps:
-            - uses: actions/checkout@v3
-              with:
-                path: "/gecko-dev-scripts"
+            - name: Clone scripts repository
+              run: |
+                git clone --depth 1 ${{ github.server_url }}/${{ github.repository }} /gecko-dev-scripts
 
             - name: Update run state
               run: node /gecko-dev-scripts/src/set-run-state.js ${{ inputs.sha }} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
