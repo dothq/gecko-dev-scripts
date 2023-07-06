@@ -47,9 +47,9 @@ async function main() {
 
     const assigneesFile = (await axios.get("https://raw.githubusercontent.com/dothq/browser-desktop/nightly/build/ci/MERGEDAY_ASSIGNEES.txt")).data;
     const allAssignees = assigneesFile.replace(/#.*/gm, "").split("\n").filter(Boolean);
-    const assignees = allAssignees.filter(u => !u.startsWith("!!!"))
-    const reviewers = allAssignees.filter(u => u.startsWith("!!!"))
-
+    const assignees = allAssignees.filter(u => u).map(u => u.replace(/\!/g, ""))
+    const reviewers = allAssignees.filter(u => u.startsWith("!!!")).map(u => u.replace(/\!/g, ""))
+    
     await gh.request("POST /repos/{owner}/{repo}/issues/{issue_number}/assignees", {
         ...common,
         issue_number: pr.data.number,
