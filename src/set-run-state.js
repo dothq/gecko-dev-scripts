@@ -1,6 +1,8 @@
 import ms from "ms";
 import { createGHApp } from "./shared/github.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
+import { resolve } from "path";
+import { homedir } from "os";
 
 const main = async () => {
     const app = createGHApp();
@@ -12,11 +14,11 @@ const main = async () => {
 
     const octokit = await app.getInstallationOctokit(installation.data.id);
 
-    if (existsSync("/run_id")) {
+    if (existsSync(resolve(homedir(), "run_id"))) {
         await octokit.request("PATCH /repos/{owner}/{repo}/check-runs/{check_run_id}", {
             owner: "dothq",
             repo: "gecko-dev",
-            check_run_id: readFileSync("/run_id", "utf-8").trim(),
+            check_run_id: readFileSync(resolve(homedir(), "run_id"), "utf-8").trim(),
             conclusion: process.env.CONCLUSION,
             status: "completed",
             output: {
@@ -42,7 +44,7 @@ const main = async () => {
             }
         });
 
-        writeFileSync("/run_id", run.data.id.toString(), "utf-8");
+        writeFileSync(resolve(homedir(), "run_id"), run.data.id.toString(), "utf-8");
     }
 }
 
