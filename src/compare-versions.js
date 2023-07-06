@@ -1,10 +1,9 @@
 import { compareVersions } from "compare-versions";
 import axios from "axios";
-import { Octokit } from "@octokit/core";
-import { restEndpointMethods } from "@octokit/plugin-rest-endpoint-methods";
-import { readFileSync } from "fs";
+import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import hbs from "handlebars";
+import { createGH } from "./shared/github";
 
 async function main() {
     const args = process.argv.splice(2);
@@ -17,12 +16,13 @@ async function main() {
     const result = compareVersions(currentVersion, prevCheckedVersion ? prevCheckedVersion : currentVersion);
 
     if (!result) {
-        console.log("No changes yet.")
+        console.log("No changes yet.");
         process.exit(1);
     }
 
-    const GitHub = Octokit.plugin(restEndpointMethods);
-    const gh = new GitHub({ auth: process.env.ROBOT_TOKEN });
+    writeFileSync(resolve(process.cwd(), "current_version.txt"), currentVersion);
+
+    const gh = createGH();
 
     const common = {
         owner: "dothq",
@@ -63,6 +63,23 @@ async function main() {
     });
 
     console.log("Pull request has been made.")
+
+    const scriptsRepo = await gh.request("GET /repos/{owner}/{repo}", {
+        owner: "dothq",
+        repo: "gecko-dev-scripts"
+    });
+
+    await gh.request("POST /repos/{owner}/{repo}/actions/workflows/{workflow_id}/dispatches", {
+        owner: "dothq",
+        repo: "gecko-dev-scripts",
+        workflow_id: "build-ff",
+        ref: scriptsRepo.data.default_branch,
+        inputs: {
+            revision: pr.data.head.sha
+        }
+    });
+
+    console.log("Build dispatch is in progress...")
 }
 
 main();

@@ -1,0 +1,59 @@
+name: "Build Firefox"
+
+on:
+    workflow_dispatch:
+        inputs:
+            sha:
+                description: "Revision to build from"
+                required: true
+                type: string
+
+env:
+    SCCACHE_VERSION: "0.5.4"
+
+jobs:
+    build:
+        strategy:
+            matrix:
+                os: [ubuntu-latest]
+        runs-on: ${{ matrix.os }}
+        steps:
+            - uses: actions/checkout@v3
+              with:
+                path: "/gecko-dev-scripts"
+
+            - name: Update run state
+              run: node /gecko-dev-scripts/src/set-run-state.js ${{ inputs.sha }} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+
+            - name: Checkout source tree
+              uses: actions/checkout@v3
+              with:
+                repository: dothq/gecko-dev
+                ref: ${{ inputs.sha }}
+
+            - name: Install dependencies
+              run: |
+                apt-get install -y curl \
+                                   python3 \
+                                   python3-pip
+                curl -L https://github.com/mozilla/sccache/releases/download/v${{ env.SCCACHE_VERSION }}/sccache-v${{ env.SCCACHE_VERSION }}-$(uname -m)-unknown-linux-musl.tar.gz | tar -xzf -
+                mv sccache-v${{ env.SCCACHE_VERSION }}-$(uname -m)-unknown-linux-musl/sccache /usr/local/bin/
+                ./mach --no-interactive bootstrap --application-choice browser
+
+            - name: Configure the build
+              run: |
+                rm mozconfig
+                touch mozconfig
+                echo "ac_add_options --with-ccache=sccache" >> mozconfig
+
+            - name: Build the source tree
+              id: build
+              continue-on-error: true
+              run: |
+                echo "Compilation started at $(date '+%a %d %b %Y %H:%M:%S %Z')."
+                ./mach build >/dev/null
+
+            - name: Update run state
+              if: always()
+              timeout-minutes: 5
+              run: node /gecko-dev-scripts/src/set-run-state.js ${{ steps.build.outcome }}
