@@ -74,7 +74,7 @@ async function main() {
         repo: "gecko-dev-scripts",
     });
 
-    const buildWorkflowId = workflows.data.workflows.find(w => w.path == "build-ff.yml").id;
+    const buildWorkflowId = workflows.data.workflows.find(w => w.path.endsWith("/build-ff.yml")).id;
 
     if (!buildWorkflowId) {
         throw new Error("No build-ff workflow!");
