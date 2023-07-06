@@ -38,7 +38,7 @@ async function main() {
     const pr = await gh.request("POST /repos/{owner}/{repo}/pulls", {
         ...common,
         head: "mozilla:release",
-        base: "release",
+        base: "dothq:release",
         draft: true,
         title: `v${currentVersion}`,
         body
