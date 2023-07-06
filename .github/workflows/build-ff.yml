@@ -62,7 +62,6 @@ jobs:
 
             - name: Configure the build
               run: |
-                rm mozconfig
                 touch mozconfig
                 echo "ac_add_options --with-ccache=sccache" >> mozconfig
 
