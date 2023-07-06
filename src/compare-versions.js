@@ -86,7 +86,7 @@ async function main() {
         workflow_id: buildWorkflowId,
         ref: scriptsRepo.data.default_branch,
         inputs: {
-            revision: pr.data.head.sha
+            sha: pr.data.head.sha
         }
     });
 
