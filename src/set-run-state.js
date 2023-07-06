@@ -1,4 +1,4 @@
-import { createGH } from "./shared/github";
+import { createGH } from "./shared/github.js";
 import { existsSync, readFileSync, writeFileSync } from "fs";
 
 const main = async () => {

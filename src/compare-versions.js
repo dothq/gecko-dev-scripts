@@ -3,7 +3,7 @@ import axios from "axios";
 import { readFileSync, writeFileSync } from "fs";
 import { resolve } from "path";
 import hbs from "handlebars";
-import { createGH } from "./shared/github";
+import { createGH } from "./shared/github.js";
 
 async function main() {
     const args = process.argv.splice(2);
