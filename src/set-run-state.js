@@ -24,9 +24,7 @@ const main = async () => {
             output: {
                 title: process.env.CONCLUSION == "success" 
                     ? `Firefox v${process.env.VERSION} was successfully compiled in ${ms(Date.now() - process.env.START_TIME_MS)}` 
-                    : process.env.CONCLUSION == "failure" 
-                        ? `Failed to compile`
-                        : "Unknown outcome!",
+                    : `Failed to compile. Click 'Details' for more information.`,
                 summary: ""
             }
         });
