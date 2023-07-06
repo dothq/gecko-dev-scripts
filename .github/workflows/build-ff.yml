@@ -21,6 +21,7 @@ jobs:
             - name: Clone scripts repository
               run: |
                 git clone --depth 1 ${{ github.server_url }}/${{ github.repository }} ~/gd-scripts
+                cd ~/gd-scripts && npm install 
 
             - name: Update run state
               run: node ~/gd-scripts/src/set-run-state.js ${{ inputs.sha }} ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
