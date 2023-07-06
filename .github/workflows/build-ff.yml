@@ -54,6 +54,5 @@ jobs:
                 ./mach build >/dev/null
 
             - name: Update run state
-              if: always()
               timeout-minutes: 5
               run: node /gecko-dev-scripts/src/set-run-state.js ${{ steps.build.outcome }}
