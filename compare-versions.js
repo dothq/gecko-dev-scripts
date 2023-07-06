@@ -38,8 +38,9 @@ async function main() {
     const pr = await gh.request("POST /repos/{owner}/{repo}/pulls", {
         ...common,
         head: "mozilla:release",
-        base: "dothq:release",
-        draft: true,
+        head_repo: "gecko-dev",
+        base: "release",
+        maintainer_can_modify: false,
         title: `v${currentVersion}`,
         body
     })
